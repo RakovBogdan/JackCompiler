@@ -35,6 +35,34 @@ public class FileUtil {
         }
     }
 
+    public static String collectFileIntoStringWithoutComments(Path filePath) {
+        StringBuilder result = new StringBuilder();
+        try (BufferedReader br = Files.newBufferedReader(filePath)) {
+            int charCode = br.read();
+            while (charCode != -1) {
+                if (charCode == '/') {
+                    int charCoide = br.read();
+                    if (charCode == '/') {
+                        while (charCode != '\\' && br.read() != 'n') {
+                            charCode = br.read();
+                        }
+                    }
+                    if (charCode == '*') {
+                        charCode = br.read();
+                        while (charCode != '*' && br.read() != '/') {
+                            charCode = br.read();
+                        }
+                    }
+                }
+                result.append((char) charCode);
+            }
+
+            return result.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void writeLinesToNewFile(List<String> lines, Path filePath) {
         try (BufferedWriter writer = Files.newBufferedWriter(filePath)) {
             lines.forEach(line -> {
