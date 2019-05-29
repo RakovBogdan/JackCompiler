@@ -17,16 +17,16 @@ public class JackAnalyzer {
 
         List<Path> filePaths = FileUtil.parseResourceToFilePaths(resourceToParse);
         for (Path filePath : filePaths) {
-            List<String> fileLines = FileUtil.readFileLines(filePath);
-            List<String> result = compileJackProgram(fileLines);
+            String jackProgram = FileUtil.readFile(filePath);
+            List<String> result = compileJackProgram(jackProgram);
             Path newFilePath = getNewFilePathWithVMExtension(filePath);
             FileUtil.writeLinesToNewFile(result, newFilePath);
         }
     }
 
-    private static List<String> compileJackProgram(List<String> fileLines) {
+    private static List<String> compileJackProgram(String jackProgram) {
         compilationEngine.reset();
-        JackTokenizer jackTokenizer = new JackTokenizer(fileLines);
+        JackTokenizer jackTokenizer = new JackTokenizer(jackProgram);
         compilationEngine.setJackTokenizer(jackTokenizer);
         compilationEngine.compileClass();
         return compilationEngine.getResult();

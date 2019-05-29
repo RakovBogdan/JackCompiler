@@ -1,7 +1,5 @@
 package org.bohdanrakov.jackcompiler;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,7 +9,11 @@ public class JackTokenizer {
     private List<String> tokens;
     private Iterator<String> tokensIterator;
 
-    public JackTokenizer(List<String> lines) {
+    public JackTokenizer(String source) {
+        tokenize(source);
+    }
+
+    void tokenize(String source) {
     }
 
     public void advance() {

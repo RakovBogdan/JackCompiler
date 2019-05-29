@@ -27,37 +27,9 @@ public class FileUtil {
         }
     }
 
-    public static List<String> readFileLines(Path filePath) {
-        try (BufferedReader br = Files.newBufferedReader(filePath)) {
-            return br.lines().collect(Collectors.toList());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static String collectFileIntoStringWithoutComments(Path filePath) {
-        StringBuilder result = new StringBuilder();
-        try (BufferedReader br = Files.newBufferedReader(filePath)) {
-            int charCode = br.read();
-            while (charCode != -1) {
-                if (charCode == '/') {
-                    int charCoide = br.read();
-                    if (charCode == '/') {
-                        while (charCode != '\\' && br.read() != 'n') {
-                            charCode = br.read();
-                        }
-                    }
-                    if (charCode == '*') {
-                        charCode = br.read();
-                        while (charCode != '*' && br.read() != '/') {
-                            charCode = br.read();
-                        }
-                    }
-                }
-                result.append((char) charCode);
-            }
-
-            return result.toString();
+    public static String readFile(Path filePath) {
+        try {
+            return new String(Files.readAllBytes(filePath));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
