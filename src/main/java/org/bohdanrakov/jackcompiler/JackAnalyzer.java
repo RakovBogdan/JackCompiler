@@ -25,8 +25,9 @@ public class JackAnalyzer {
     }
 
     private static List<String> compileJackProgram(String jackProgram) {
-        compilationEngine.reset();
         JackTokenizer jackTokenizer = new JackTokenizer(jackProgram);
+        jackTokenizer.tokenize();
+        compilationEngine.reset();
         compilationEngine.setJackTokenizer(jackTokenizer);
         compilationEngine.compileClass();
         return compilationEngine.getResult();
