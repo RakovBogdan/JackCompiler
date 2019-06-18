@@ -32,8 +32,13 @@ public class JackTokenizer {
 
         while (currentIndex < source.length()) {
             char currentChar = getCurrentChar();
-            currentIndex++;
-            if (symbols.contains((currentChar))) {
+            if (currentChar == '/') {
+                if (source.charAt(currentIndex + 1) == '/') {
+                    processSingleLineComment();
+                } else if (source.charAt(currentIndex + 1) == '*') {
+                    processMultilineComment();
+                }
+            } else if (symbols.contains((currentChar))) {
                 processCurrentWord();
                 tokens.add(new Token(TokenType.SYMBOL, String.valueOf(currentChar)));
             } else if (currentChar == ' ' || currentChar == '\n') {
@@ -48,12 +53,24 @@ public class JackTokenizer {
         }
     }
 
+    private void processSingleLineComment() {
+        while (getCurrentChar() != '\n') {
+            currentIndex++;
+        }
+    }
+
+    private void processMultilineComment() {
+
+    }
+
     private void processString() {
         StringBuilder stringConstant = new StringBuilder();
         currentIndex++;
-        while (getCurrentChar() != '"' ) {
-
+        while (currentIndex < source.length() && getCurrentChar() != '"' ) {
+            stringConstant.append(getCurrentChar());
+            currentIndex++;
         }
+        tokens.add(new Token(TokenType.STRING_CONSTANT, stringConstant.toString()));
     }
 
     private void processInteger() {
