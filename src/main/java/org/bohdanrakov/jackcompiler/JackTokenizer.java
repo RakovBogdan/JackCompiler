@@ -20,37 +20,60 @@ public class JackTokenizer {
     private String source;
     private List<Token> tokens;
     private Iterator<String> tokensIterator;
-    private StringBuilder currentWord;
-    private int currentIndex;
+    private int currentIndex = -1;
 
     public JackTokenizer(String source) {
         this.source = source;
     }
 
     public void tokenize() {
-        currentIndex = 0;
-
         while (currentIndex < source.length()) {
+            advanceIndex();
             char currentChar = getCurrentChar();
             if (currentChar == '/') {
-                if (source.charAt(currentIndex + 1) == '/') {
-                    processSingleLineComment();
-                } else if (source.charAt(currentIndex + 1) == '*') {
-                    processMultilineComment();
-                }
-            } else if (symbols.contains((currentChar))) {
-                processCurrentWord();
+                processComment();
+            } else if (symbols.contains(currentChar)) {
                 tokens.add(new Token(TokenType.SYMBOL, String.valueOf(currentChar)));
-            } else if (currentChar == ' ' || currentChar == '\n') {
-                processCurrentWord();
+            } else if (currentChar == ' ' || currentChar == '\n' || currentChar == '\t') {
+                //ignore
             } else if (currentChar == '"') {
                 processString();
             } else if (Character.isDigit(currentChar)) {
                 processInteger();
+            } else if (isAllowedWordStartSymbol(currentChar)){
+                processWord();
             } else {
-                currentWord.append(currentChar);
+                throw new RuntimeException(currentChar + " character is not allowed here");
             }
         }
+    }
+
+    private boolean isAllowedWordStartSymbol(char currentChar) {
+        return ('A' <= currentChar && currentChar <= 'Z') ||
+                ('a' <= currentChar && currentChar <= 'z' ) ||
+                currentChar == '_';
+    }
+
+    private void processComment() {
+        char nextChar = getNextChar();
+        if (nextChar == '/') {
+            processSingleLineComment();
+        } else if (nextChar == '*') {
+            processMultilineComment();
+        }
+        throw new RuntimeException("Character '/' not allowed here");
+    }
+
+    private char getNextChar() {
+        return source.charAt(currentIndex + 1);
+    }
+
+    private char getCurrentChar() {
+        return source.charAt(currentIndex);
+    }
+
+    private void advanceIndex() {
+        currentIndex++;
     }
 
     private void processSingleLineComment() {
@@ -84,21 +107,8 @@ public class JackTokenizer {
         tokens.add(new Token(TokenType.INTEGER_CONSTANT, integerValue.toString()));
     }
 
-    private char getCurrentChar() {
-        return source.charAt(currentIndex);
-    }
+    private void processWord() {
 
-    private void processCurrentWord() {
-        if (currentWord.length() == 0) {
-            return;
-        }
-
-        String wordToAdd = currentWord.toString();
-        if (KeywordMap.isPresent(wordToAdd)) {
-            tokens.add(new Token(TokenType.KEYWORD, wordToAdd));
-        } else {
-            tokens.add(new Token(TokenType.IDENTIFIER, wordToAdd));
-        }
     }
 
     public void advance() {
