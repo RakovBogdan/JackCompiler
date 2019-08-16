@@ -1,20 +1,22 @@
 package org.bohdanrakov.jackcompiler;
 
-import org.bohdanrakov.jackcompiler.tokens.KeywordMap;
 import org.bohdanrakov.jackcompiler.tokens.Token;
 import org.bohdanrakov.jackcompiler.tokens.TokenType;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 public class JackTokenizer {
 
-    private static final String NO_MORE_TOKENS = "There are no more tokens";
     private static Set<Character> symbols;
+    private static Set<String> keywords;
 
     static {
         symbols = Set.of('{', '}', '(', ')', '[', ']', '.', ',', ';', '+', '-', '*', '/', '&', '|', '<', '>', '=', '~');
+        keywords = Set.of("class", "constructor", "function", "method", "field", "static", "var", "int", "char",
+                "boolean", "void", "true", "false", "null", "this", "let", "do", "if", "else", "while", "return");
     }
 
     private String source;
@@ -24,10 +26,11 @@ public class JackTokenizer {
 
     public JackTokenizer(String source) {
         this.source = source;
+        tokens = new ArrayList<>();
     }
 
     public void tokenize() {
-        while (currentIndex < source.length()) {
+        while (currentIndex < source.length() - 1) {
             advanceIndex();
             char currentChar = getCurrentChar();
             if (currentChar == '/') {
@@ -38,7 +41,7 @@ public class JackTokenizer {
                 //ignore
             } else if (currentChar == '"') {
                 processString();
-            } else if (Character.isDigit(currentChar)) {
+            } else if (isDigit(currentChar)) {
                 processInteger();
             } else if (isAllowedWordStartSymbol(currentChar)){
                 processWord();
@@ -54,18 +57,30 @@ public class JackTokenizer {
                 currentChar == '_';
     }
 
+    private boolean isDigit(char character) {
+        return character >= '0' && character <= '9';
+    }
+
     private void processComment() {
         char nextChar = getNextChar();
         if (nextChar == '/') {
             processSingleLineComment();
         } else if (nextChar == '*') {
             processMultilineComment();
+        } else {
+            throw new RuntimeException("Character '/' not allowed here");
         }
-        throw new RuntimeException("Character '/' not allowed here");
     }
 
     private char getNextChar() {
+        if (isSourceEndReached()) {
+            return '\0';
+        }
         return source.charAt(currentIndex + 1);
+    }
+
+    private boolean isSourceEndReached() {
+        return currentIndex + 1 == source.length();
     }
 
     private char getCurrentChar() {
@@ -80,10 +95,22 @@ public class JackTokenizer {
         while (getCurrentChar() != '\n') {
             currentIndex++;
         }
+        currentIndex++;
     }
 
     private void processMultilineComment() {
 
+        while (currentIndex < source.length()) {
+            if (getCurrentChar() == '*' && getNextChar() == '/') {
+                currentIndex++;
+                break;
+            }
+            currentIndex++;
+        }
+
+        if (getCurrentChar() == '\0') {
+            throw new RuntimeException("Reached end of file while parsing multiline comment");
+        }
     }
 
     private void processString() {
@@ -99,27 +126,29 @@ public class JackTokenizer {
     private void processInteger() {
         StringBuilder integerValue = new StringBuilder();
         integerValue.append(getCurrentChar());
-        currentIndex++;
-        while (currentIndex < source.length() && Character.isDigit(getCurrentChar())) {
-            integerValue.append(getCurrentChar());
+        while (currentIndex < source.length() - 1 && isDigit(getNextChar())) {
+            integerValue.append(getNextChar());
             currentIndex++;
         }
         tokens.add(new Token(TokenType.INTEGER_CONSTANT, integerValue.toString()));
     }
 
     private void processWord() {
-
-    }
-
-    public void advance() {
-        if (hasMoreTokens()) {
-            tokensIterator.next();
+        StringBuilder wordAccumulator = new StringBuilder();
+        wordAccumulator.append(getCurrentChar());
+        while (isAllowedWordStartSymbol(getNextChar()) || isDigit(getNextChar())) {
+            wordAccumulator.append(getNextChar());
+            currentIndex++;
+        }
+        String word = wordAccumulator.toString();
+        if (keywords.contains(word)) {
+            tokens.add(new Token(TokenType.KEYWORD, word));
         } else {
-            throw new RuntimeException(NO_MORE_TOKENS);
+            tokens.add(new Token(TokenType.IDENTIFIER, word));
         }
     }
 
-    private boolean hasMoreTokens() {
-        return tokensIterator.hasNext();
+    public List<Token> getTokens() {
+        return tokens;
     }
 }
