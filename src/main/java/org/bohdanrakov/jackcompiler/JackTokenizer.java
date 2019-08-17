@@ -35,16 +35,7 @@ public class JackTokenizer {
             if (currentChar == '/') {
                 processComment();
             } else if (symbols.contains(currentChar)) {
-                if (currentChar == '<') {
-                    tokens.add(new Token(TokenType.SYMBOL, "&lt;"));
-                } else if (currentChar == '>') {
-                    tokens.add(new Token(TokenType.SYMBOL, "&gt;"));
-                } else if (currentChar == '&') {
-                    tokens.add(new Token(TokenType.SYMBOL, "&amp;"));
-                }
-                else {
-                    tokens.add(new Token(TokenType.SYMBOL, String.valueOf(currentChar)));
-                }
+                processSymbol(currentChar);
             } else if (currentChar == ' ' || currentChar == '\n' || currentChar == '\r' || currentChar == '\t') {
                 //ignore
             } else if (currentChar == '"') {
@@ -56,6 +47,19 @@ public class JackTokenizer {
             } else {
                 throw new RuntimeException(currentChar + " character is not allowed here");
             }
+        }
+    }
+
+    private void processSymbol(char currentChar) {
+        if (currentChar == '<') {
+            tokens.add(new Token(TokenType.SYMBOL, "&lt;"));
+        } else if (currentChar == '>') {
+            tokens.add(new Token(TokenType.SYMBOL, "&gt;"));
+        } else if (currentChar == '&') {
+            tokens.add(new Token(TokenType.SYMBOL, "&amp;"));
+        }
+        else {
+            tokens.add(new Token(TokenType.SYMBOL, String.valueOf(currentChar)));
         }
     }
 
