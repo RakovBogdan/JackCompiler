@@ -29,7 +29,7 @@ public class JackAnalyzer {
         jackTokenizer.tokenize();
         compilationEngine.reset();
         compilationEngine.setJackTokenizer(jackTokenizer);
-        compilationEngine.compileClass();
+        compilationEngine.compileClassWithoutAnalyzing();
         return compilationEngine.getResult();
     }
 

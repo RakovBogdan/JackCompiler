@@ -36,8 +36,17 @@ public class JackTokenizer {
             if (currentChar == '/') {
                 processComment();
             } else if (symbols.contains(currentChar)) {
-                tokens.add(new Token(TokenType.SYMBOL, String.valueOf(currentChar)));
-            } else if (currentChar == ' ' || currentChar == '\n' || currentChar == '\t') {
+                if (currentChar == '<') {
+                    tokens.add(new Token(TokenType.SYMBOL, "&lt;"));
+                } else if (currentChar == '>') {
+                    tokens.add(new Token(TokenType.SYMBOL, "&gt;"));
+                } else if (currentChar == '&') {
+                    tokens.add(new Token(TokenType.SYMBOL, "&amp;"));
+                }
+                else {
+                    tokens.add(new Token(TokenType.SYMBOL, String.valueOf(currentChar)));
+                }
+            } else if (currentChar == ' ' || currentChar == '\n' || currentChar == '\r' || currentChar == '\t') {
                 //ignore
             } else if (currentChar == '"') {
                 processString();
@@ -68,7 +77,8 @@ public class JackTokenizer {
         } else if (nextChar == '*') {
             processMultilineComment();
         } else {
-            throw new RuntimeException("Character '/' not allowed here");
+            tokens.add(new Token(TokenType.SYMBOL, "/"));
+            currentIndex++;
         }
     }
 
@@ -92,10 +102,9 @@ public class JackTokenizer {
     }
 
     private void processSingleLineComment() {
-        while (getCurrentChar() != '\n') {
+        while (currentIndex < source.length() && getCurrentChar() != '\n') {
             currentIndex++;
         }
-        currentIndex++;
     }
 
     private void processMultilineComment() {

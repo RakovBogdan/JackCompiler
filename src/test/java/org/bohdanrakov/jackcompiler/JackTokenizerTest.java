@@ -16,7 +16,8 @@ public class JackTokenizerTest {
 
     @Test
     public void shouldProcessSingleLineComment() {
-        testInstance = new JackTokenizer("class //single line comment\n");
+        testInstance = new JackTokenizer("class //single line comment\n" +
+                                                "// another single line comment");
         testInstance.tokenize();
         assertEquals(1, testInstance.getTokens().size());
         assertSame(testInstance.getTokens().get(0).getTokenType(), TokenType.KEYWORD);
