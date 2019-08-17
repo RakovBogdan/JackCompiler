@@ -21,7 +21,6 @@ public class JackTokenizer {
 
     private String source;
     private List<Token> tokens;
-    private Iterator<String> tokensIterator;
     private int currentIndex = -1;
 
     public JackTokenizer(String source) {
@@ -31,7 +30,7 @@ public class JackTokenizer {
 
     public void tokenize() {
         while (currentIndex < source.length() - 1) {
-            advanceIndex();
+            currentIndex++;
             char currentChar = getCurrentChar();
             if (currentChar == '/') {
                 processComment();
@@ -95,10 +94,6 @@ public class JackTokenizer {
 
     private char getCurrentChar() {
         return source.charAt(currentIndex);
-    }
-
-    private void advanceIndex() {
-        currentIndex++;
     }
 
     private void processSingleLineComment() {
