@@ -27,10 +27,7 @@ public class JackAnalyzer {
     private static List<String> compileJackProgram(String jackProgram) {
         JackTokenizer jackTokenizer = new JackTokenizer(jackProgram);
         jackTokenizer.tokenize();
-        compilationEngine.reset();
-        compilationEngine.setJackTokenizer(jackTokenizer);
-        compilationEngine.compileClassWithoutAnalyzing();
-        return compilationEngine.getResult();
+        return compilationEngine.compileClassWithoutAnalyzing(jackTokenizer.getTokens());
     }
 
     private static Path getNewFilePathWithVMExtension(Path filePath) {

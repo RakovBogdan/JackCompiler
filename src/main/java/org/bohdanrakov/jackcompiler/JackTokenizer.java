@@ -57,8 +57,9 @@ public class JackTokenizer {
             tokens.add(new Token(TokenType.SYMBOL, "&gt;"));
         } else if (currentChar == '&') {
             tokens.add(new Token(TokenType.SYMBOL, "&amp;"));
-        }
-        else {
+        } else if (currentChar == '"') {
+            tokens.add(new Token(TokenType.SYMBOL, "&quot;"));
+        } else {
             tokens.add(new Token(TokenType.SYMBOL, String.valueOf(currentChar)));
         }
     }

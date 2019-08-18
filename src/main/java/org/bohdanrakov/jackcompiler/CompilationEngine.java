@@ -1,24 +1,27 @@
 package org.bohdanrakov.jackcompiler;
 
+import org.bohdanrakov.jackcompiler.tokens.Token;
 import org.bohdanrakov.jackcompiler.tokens.TokenType;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CompilationEngine {
 
-    private JackTokenizer jackTokenizer;
-    private List<String> result;
+    private Iterator<Token> tokensIterator;
 
-    public void compileClass() {
-
+    public List<String> compileClass(List<Token> tokens) {
+        tokensIterator = tokens.iterator();
+        List<String> result = new ArrayList<>();
+        return result;
     }
 
-    public void compileClassWithoutAnalyzing() {
-        result = new ArrayList<>();
+    public List<String> compileClassWithoutAnalyzing(List<Token> tokens) {
+        List<String> result = new ArrayList<>();
         result.add("<tokens>");
-        List<String> toXml = jackTokenizer.getTokens().stream().map(token -> {
+        List<String> toXml = tokens.stream().map(token -> {
             if (TokenType.KEYWORD == token.getTokenType()) {
                 return "<keyword> " + token.getStringValue() + " </keyword>";
             } else if (TokenType.SYMBOL == token.getTokenType()) {
@@ -34,17 +37,6 @@ public class CompilationEngine {
         }).collect(Collectors.toList());
         result.addAll(toXml);
         result.add("</tokens>");
-    }
-
-    public void setJackTokenizer(JackTokenizer jackTokenizer) {
-        this.jackTokenizer = jackTokenizer;
-    }
-
-    public List<String> getResult() {
         return result;
-    }
-
-    public void reset() {
-        result = new ArrayList<>();
     }
 }
