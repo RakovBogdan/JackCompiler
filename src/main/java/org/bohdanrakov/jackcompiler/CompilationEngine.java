@@ -15,6 +15,9 @@ public class CompilationEngine {
     public List<String> compileClass(List<Token> tokens) {
         tokensIterator = tokens.iterator();
         List<String> result = new ArrayList<>();
+        result.add("<class>");
+        result.add("<keyword> class </keyword>");
+        result.add("</class>");
         return result;
     }
 
