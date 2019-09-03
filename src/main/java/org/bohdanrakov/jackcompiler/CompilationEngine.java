@@ -14,11 +14,14 @@ import static org.bohdanrakov.jackcompiler.tokens.TokenType.*;
 public class CompilationEngine {
 
     private static Set<String> subroutinesTypes = Set.of("function", "constructor", "method");
-    private Iterator<Token> tokensIterator;
+    private List<Token> tokens;
+    private List<String> result;
+    private int tokenNumber;
 
     public List<String> compileClass(List<Token> tokens) {
-        tokensIterator = tokens.iterator();
-        List<String> result = new ArrayList<>();
+        tokenNumber = 0;
+        this.tokens = tokens;
+        result = new ArrayList<>();
         result.add("<class>");
         result.add("<keyword> " + getSpecifiedValue(KEYWORD, "class") + " </keyword>");
         result.add("<identifier> " + getNextTokenStringValueByType(IDENTIFIER) + " </identifier>");
@@ -27,28 +30,29 @@ public class CompilationEngine {
         Token nextToken;
         while (!(nextToken = getNextToken()).getStringValue().equals("}")) {
             if (subroutinesTypes.contains(nextToken.getStringValue())) {
-                compileSubroutineDeclaration(result);
+                compileSubroutineDeclaration();
             } else {
-                compileClassVariableDeclaration(result);
+                compileClassVariableDeclaration();
             }
         }
 
         result.add("<symbol> " + nextToken.getStringValue() + " </symbol>");
         result.add("</class>");
+
         return result;
     }
 
-    private void compileClassVariableDeclaration(List<String> result) {
+    private void compileClassVariableDeclaration() {
 
     }
 
-    private void compileSubroutineDeclaration(List<String> result) {
+    private void compileSubroutineDeclaration() {
 
     }
 
     private Token getNextToken() {
-        if (tokensIterator.hasNext()) {
-            return tokensIterator.next();
+        if (tokenNumber < tokens.size()) {
+            return tokens.get(tokenNumber++);
         } else {
             throw new RuntimeException("There is no next token");
         }
