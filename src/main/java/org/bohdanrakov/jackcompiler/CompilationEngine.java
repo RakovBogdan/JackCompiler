@@ -65,12 +65,7 @@ public class CompilationEngine {
         result.add("<keyword> " + classVariableTokenValue + " </keyword>");
 
         Token variableTypeToken = getNextToken();
-        if (Set.of("int", "char", "boolean").contains(variableTypeToken.getStringValue())) {
-            result.add("<keyword> " + variableTypeToken.getStringValue() + " </keyword>");
-        } else {
-            checkTokenType(variableTypeToken.getTokenType(), IDENTIFIER);
-            result.add("<identifier> " + variableTypeToken.getStringValue() + " </identifier>");
-        }
+        compileType(variableTypeToken);
 
         Token variableNameToken = getNextToken();
         checkTokenType(variableNameToken.getTokenType(), IDENTIFIER);
@@ -90,8 +85,66 @@ public class CompilationEngine {
         result.add("</classVarDec>");
     }
 
-    private void compileSubroutineDeclaration() {
+    private void compileType(Token token) {
+        if (Set.of("int", "char", "boolean").contains(token.getStringValue())) {
+            result.add("<keyword> " + token.getStringValue() + " </keyword>");
+        } else {
+            checkTokenType(token.getTokenType(), IDENTIFIER);
+            result.add("<identifier> " + token.getStringValue() + " </identifier>");
+        }
+    }
 
+    private void compileSubroutineDeclaration() {
+        result.add("<subroutineDec>");
+        checkTokenType(getCurrentToken().getTokenType(), KEYWORD);
+        checkTokenValue(getCurrentToken().getStringValue(), "function", "constructor", "method");
+        result.add("<keyword> " + getCurrentToken().getStringValue() + " </keyword>");
+        Token token = getNextToken();
+        if (token.getStringValue().equals("void")) {
+            result.add("<keyword> " + getCurrentToken().getStringValue() + " </keyword>");
+        } else {
+            compileType(token);
+        }
+        Token subroutineName = getNextToken();
+        checkTokenType(subroutineName.getTokenType(), IDENTIFIER);
+        result.add("<identifier> " + subroutineName.getStringValue() + " </identifier>");
+
+        Token openParenthesis = getNextToken();
+        checkTokenValue(openParenthesis.getStringValue(), "(");
+        result.add("<symbol> " + openParenthesis.getStringValue() + " </symbol>");
+
+        Token nextToken;
+        if (!(nextToken = getNextToken()).getStringValue().equals(")")) {
+            addParamToParamList(nextToken);
+            while (!(nextToken = getNextToken()).getStringValue().equals(")")) {
+                checkTokenValue(nextToken.getStringValue(), ",");
+                result.add("<symbol> " + nextToken.getStringValue() + " </symbol>");
+                addParamToParamList(nextToken);
+            }
+        }
+
+        Token closeParenthesis = getCurrentToken();
+        checkTokenValue(closeParenthesis.getStringValue(), ")");
+        result.add("<symbol> " + closeParenthesis.getStringValue() + " </symbol>");
+
+        compileSubroutineBody();
+
+        result.add("</subroutineDec>");
+    }
+
+    private void compileSubroutineBody() {
+        Token openParenthesis = getNextToken();
+        checkTokenValue(openParenthesis.getStringValue(), "{");
+        result.add("<symbol> " + openParenthesis.getStringValue() + " </symbol>");
+
+
+    }
+
+    private void addParamToParamList(Token paramType) {
+        compileType(paramType);
+        Token nextToken = getNextToken();
+        checkTokenType(nextToken.getTokenType(), IDENTIFIER);
+        result.add("<identifier> " + nextToken.getStringValue() + " </identifier>");
     }
 
     private Token getCurrentToken() {
