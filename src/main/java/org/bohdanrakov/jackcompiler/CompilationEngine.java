@@ -3,10 +3,7 @@ package org.bohdanrakov.jackcompiler;
 import org.bohdanrakov.jackcompiler.tokens.Token;
 import org.bohdanrakov.jackcompiler.tokens.TokenType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.bohdanrakov.jackcompiler.tokens.TokenType.*;
@@ -183,6 +180,47 @@ public class CompilationEngine {
     }
 
     private void compileStatements() {
+        Set<String> statementTypes = Set.of("let", "if", "while", "do", "return");
+
+        while (statementTypes.contains(getCurrentToken().getStringValue())) {
+            switch (getCurrentToken().getStringValue()) {
+                case "let":
+                    compileLetStatement();
+                    break;
+                case "if":
+                    compileIfStatement();
+                    break;
+                case "while":
+                    compileWhileStatement();
+                    break;
+                case "do":
+                    compileDoStatement();
+                    break;
+                case "return":
+                    compileReturnStatement();
+                    break;
+            }
+            getNextToken();
+        }
+    }
+
+    private void compileLetStatement() {
+
+    }
+
+    private void compileIfStatement() {
+
+    }
+
+    private void compileWhileStatement() {
+
+    }
+
+    private void compileDoStatement() {
+
+    }
+
+    private void compileReturnStatement() {
 
     }
 
