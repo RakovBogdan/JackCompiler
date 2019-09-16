@@ -60,9 +60,9 @@ public class CompilationEngine {
     private void compileClassVariableDeclaration() {
         result.add("<classVarDec>");
 
-        final String classVariableTokenValue = getCurrentToken().getStringValue();
-        checkTokenValue(classVariableTokenValue, "static", "field");
-        result.add("<keyword> " + classVariableTokenValue + " </keyword>");
+        final String classOrInstanceVariableTokenValue = getCurrentToken().getStringValue();
+        checkTokenValue(classOrInstanceVariableTokenValue, "static", "field");
+        result.add("<keyword> " + classOrInstanceVariableTokenValue + " </keyword>");
 
         Token variableTypeToken = getNextToken();
         compileType(variableTypeToken);
@@ -83,6 +83,34 @@ public class CompilationEngine {
         result.add("<symbol> " + endOfClassVariableDeclaration.getStringValue() + " </symbol>");
 
         result.add("</classVarDec>");
+    }
+
+    private void compileVariableDeclaration() {
+        result.add("<varDec>");
+
+        final String varToken = getCurrentToken().getStringValue();
+        checkTokenValue(varToken, "var");
+        result.add("<keyword> " + varToken + " </keyword>");
+
+        Token variableTypeToken = getNextToken();
+        compileType(variableTypeToken);
+
+        Token variableNameToken = getNextToken();
+        checkTokenType(variableNameToken.getTokenType(), IDENTIFIER);
+        result.add("<identifier> " + variableNameToken.getStringValue() + " </identifier>");
+
+        while (getNextToken().getStringValue().equals(",")) {
+            result.add("<symbol> " + getCurrentToken().getStringValue() + " </symbol>");
+            variableNameToken = getNextToken();
+            checkTokenType(variableNameToken.getTokenType(), IDENTIFIER);
+            result.add("<identifier> " + variableNameToken.getStringValue() + " </identifier>");
+        }
+
+        Token endOfClassVariableDeclaration = getNextToken();
+        checkTokenValue(endOfClassVariableDeclaration.getStringValue(), ";");
+        result.add("<symbol> " + endOfClassVariableDeclaration.getStringValue() + " </symbol>");
+
+        result.add("</varDec>");
     }
 
     private void compileType(Token token) {
@@ -115,11 +143,11 @@ public class CompilationEngine {
 
         Token nextToken;
         if (!(nextToken = getNextToken()).getStringValue().equals(")")) {
-            addParamToParamList(nextToken);
+            compileSubroutineParam(nextToken);
             while (!(nextToken = getNextToken()).getStringValue().equals(")")) {
                 checkTokenValue(nextToken.getStringValue(), ",");
                 result.add("<symbol> " + nextToken.getStringValue() + " </symbol>");
-                addParamToParamList(nextToken);
+                compileSubroutineParam(nextToken);
             }
         }
 
@@ -132,19 +160,30 @@ public class CompilationEngine {
         result.add("</subroutineDec>");
     }
 
+    private void compileSubroutineParam(Token paramType) {
+        compileType(paramType);
+        Token nextToken = getNextToken();
+        checkTokenType(nextToken.getTokenType(), IDENTIFIER);
+        result.add("<identifier> " + nextToken.getStringValue() + " </identifier>");
+    }
+
     private void compileSubroutineBody() {
         Token openParenthesis = getNextToken();
         checkTokenValue(openParenthesis.getStringValue(), "{");
         result.add("<symbol> " + openParenthesis.getStringValue() + " </symbol>");
 
+        while (getNextToken().getStringValue().equals("var")) {
+            compileVariableDeclaration();
+        }
 
+        compileStatements();
+
+        checkTokenValue(getNextToken().getStringValue(), "}");
+        result.add("<symbol> " + getCurrentToken().getStringValue() + " </symbol>");
     }
 
-    private void addParamToParamList(Token paramType) {
-        compileType(paramType);
-        Token nextToken = getNextToken();
-        checkTokenType(nextToken.getTokenType(), IDENTIFIER);
-        result.add("<identifier> " + nextToken.getStringValue() + " </identifier>");
+    private void compileStatements() {
+
     }
 
     private Token getCurrentToken() {
