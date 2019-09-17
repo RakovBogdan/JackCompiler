@@ -205,22 +205,127 @@ public class CompilationEngine {
     }
 
     private void compileLetStatement() {
+        result.add("<letStatement>");
+        result.add("<keyword> let </keyword>");
+
+        Token variableName = getNextToken();
+        checkTokenType(variableName.getTokenType(), IDENTIFIER);
+        result.add("<identifier> " + variableName.getStringValue() + " </identifier>");
+
+        Token nextToken = getNextToken();
+        if (nextToken.getStringValue().equals("[")) {
+            result.add("<symbol> [ </symbol>");
+            getNextToken();
+            compileExpression();
+            checkTokenValue(getNextToken().getStringValue(), "]");
+            result.add("<symbol> ] </symbol>");
+            getNextToken();
+        }
+
+        checkTokenValue(getCurrentToken().getStringValue(), "=");
+        result.add("<symbol> = </symbol>");
+
+        getNextToken();
+        compileExpression();
+
+        checkTokenValue(getNextToken().getStringValue(), ";");
+        result.add("<symbol> ; </symbol>");
+
+        result.add("</letStatement>");
 
     }
 
     private void compileIfStatement() {
+        result.add("<ifStatement>");
+        result.add("<keyword> if </keyword>");
 
+        checkTokenValue(getNextToken().getStringValue(), "(");
+        result.add("<symbol> ( </symbol>");
+
+        getNextToken();
+        compileExpression();
+
+        checkTokenValue(getNextToken().getStringValue(), ")");
+        result.add("<symbol> ) </symbol>");
+
+        checkTokenValue(getNextToken().getStringValue(), "{");
+        result.add("<symbol> { </symbol>");
+        compileStatements();
+
+        checkTokenValue(getNextToken().getStringValue(), "}");
+        result.add("<symbol> } </symbol>");
+
+        if (getNextToken().getStringValue().equals("else")) {
+            result.add("<keyword> else </keyword>");
+
+            checkTokenValue(getNextToken().getStringValue(), "{");
+            result.add("<symbol> { </symbol>");
+            compileStatements();
+
+            checkTokenValue(getNextToken().getStringValue(), "}");
+            result.add("<symbol> } </symbol>");
+        }
+
+        result.add("</ifStatement>");
     }
 
     private void compileWhileStatement() {
+        result.add("<whileStatement>");
+        result.add("<keyword> while </keyword>");
 
+        checkTokenValue(getNextToken().getStringValue(), "(");
+        result.add("<symbol> ( </symbol>");
+
+        getNextToken();
+        compileExpression();
+
+        checkTokenValue(getNextToken().getStringValue(), ")");
+        result.add("<symbol> ) </symbol>");
+
+        checkTokenValue(getNextToken().getStringValue(), "{");
+        result.add("<symbol> { </symbol>");
+        compileStatements();
+
+        checkTokenValue(getNextToken().getStringValue(), "}");
+        result.add("<symbol> } </symbol>");
+
+        result.add("</whileStatement>");
     }
 
     private void compileDoStatement() {
+        result.add("<doStatement>");
+        result.add("<keyword> do </keyword>");
 
+
+
+        checkTokenValue(getNextToken().getStringValue(), ";");
+        result.add("<symbol> ; </symbol>");
+        result.add("</doStatement>");
     }
 
     private void compileReturnStatement() {
+        result.add("<returnStatement>");
+        result.add("<keyword> return </keyword>");
+
+        if (!getNextToken().getStringValue().equals(";")) {
+            compileExpression();
+        }
+
+        checkTokenValue(getNextToken().getStringValue(), ";");
+        result.add("<symbol> ; </symbol>");
+        result.add("</returnStatement>");
+
+    }
+
+    private void compileExpressionList() {
+
+    }
+
+    private void compileExpression() {
+
+    }
+
+    private void compileTerm() {
 
     }
 
