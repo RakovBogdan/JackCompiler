@@ -296,6 +296,20 @@ public class CompilationEngine {
         result.add("<doStatement>");
         result.add("<keyword> do </keyword>");
 
+        checkTokenType(getNextToken().getTokenType(), IDENTIFIER);
+        result.add("<identifier> " + getCurrentToken().getStringValue() + " </identifier>");
+
+        checkTokenValue(getNextToken().getStringValue(), "(");
+        result.add("<symbol> ( </symbol>");
+
+        result.add("<expressionList>");
+        checkTokenType(getNextToken().getTokenType(), IDENTIFIER);
+        result.add("<identifier> " + getCurrentToken().getStringValue() + " </identifier>");
+        result.add("</expressionList>");
+
+        checkTokenValue(getNextToken().getStringValue(), ")");
+        result.add("<symbol> ) </symbol>");
+
 
 
         checkTokenValue(getNextToken().getStringValue(), ";");
