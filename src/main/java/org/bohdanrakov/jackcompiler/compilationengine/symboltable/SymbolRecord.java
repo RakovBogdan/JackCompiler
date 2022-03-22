@@ -1,4 +1,4 @@
-package org.bohdanrakov.jackcompiler.symboltable;
+package org.bohdanrakov.jackcompiler.compilationengine.symboltable;
 
 public class SymbolRecord {
 

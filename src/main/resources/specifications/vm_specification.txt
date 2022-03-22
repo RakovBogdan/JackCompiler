@@ -1,0 +1,30 @@
+---Program flow (if, while, etc.)---
+label some_label
+goto some_label
+if-goto some_label (pop the stack top value, if true goto label)
+
+---Function calling---
+(class Foo, function bar -> Foo.bar function name on VM level)
+function Foo.bar n -> here start the function code with n local variables
+call Foo.bar m -> call function, m is the amount of arguments pushed on the top of the stack
+return -> return to the calling function
+
+1)Before calling the function, the
+caller must push as many arguments
+as necessary onto the stack;
+2)Next, the caller invokes the
+function using the call command;
+3) After the called function returns,
+the arguments that the caller has
+pushed before the call have
+disappeared from the stack, and a
+return value (that always exists)
+appears at the top of the stack;
+4) After the called function returns,
+the caller’s memory segments
+argument, local, static, this,
+that, and pointer are the same as
+before the call, and the temp segment
+is undefined.
+
+

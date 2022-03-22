@@ -1,4 +1,4 @@
-package org.bohdanrakov.jackcompiler.tokens;
+package org.bohdanrakov.jackcompiler.tokenizer.tokens;
 
 public enum  TokenType {
 

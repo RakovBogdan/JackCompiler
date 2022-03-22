@@ -1,5 +1,11 @@
 package org.bohdanrakov.jackcompiler;
 
+import org.bohdanrakov.jackcompiler.compilationengine.CompilationEngine;
+import org.bohdanrakov.jackcompiler.compilationengine.SemanticXMLCompilationEngine;
+import org.bohdanrakov.jackcompiler.compilationengine.TokenXMLCompilationEngine;
+import org.bohdanrakov.jackcompiler.tokenizer.JackTokenizer;
+import org.bohdanrakov.jackcompiler.utils.FileUtil;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -9,9 +15,10 @@ public class JackAnalyzer {
     public static final String ARGUMENT_MISSING = "Resource name wasn't passed as program argument";
     public static final String JackVMExtension = ".vm";
 
-    private static CompilationEngine compilationEngine = new CompilationEngine();
+    private static CompilationEngine compilationEngine;
 
     public static void main(String[] args) {
+        compilationEngine = new SemanticXMLCompilationEngine();
         checkResourceArgument(args);
         String resourceToParse = args[0];
 

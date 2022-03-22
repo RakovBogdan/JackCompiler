@@ -1,6 +1,7 @@
 package org.bohdanrakov.jackcompiler;
 
-import org.bohdanrakov.jackcompiler.tokens.TokenType;
+import org.bohdanrakov.jackcompiler.tokenizer.JackTokenizer;
+import org.bohdanrakov.jackcompiler.tokenizer.tokens.TokenType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

@@ -1,7 +1,7 @@
-package org.bohdanrakov.jackcompiler;
+package org.bohdanrakov.jackcompiler.compilationengine;
 
-import org.bohdanrakov.jackcompiler.tokens.Token;
-import org.bohdanrakov.jackcompiler.tokens.TokenType;
+import org.bohdanrakov.jackcompiler.tokenizer.tokens.Token;
+import org.bohdanrakov.jackcompiler.tokenizer.tokens.TokenType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,9 +10,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.bohdanrakov.jackcompiler.tokens.TokenType.*;
+import static org.bohdanrakov.jackcompiler.tokenizer.tokens.TokenType.*;
 
-public class CompilationEngine {
+public class SemanticXMLCompilationEngine implements CompilationEngine {
 
     private final Set<String> statementKeywords = Stream.of("let", "if", "while", "do", "return")
             .collect(Collectors.toSet());
@@ -27,17 +27,6 @@ public class CompilationEngine {
     private List<Token> tokens;
     private Token currentToken;
 
-    public List<String> compileClassWithoutAnalyzing(List<Token> tokens) {
-        this.tokens = tokens;
-        List<String> result = new ArrayList<>();
-        result.add("<tokens>");
-        List<String> toXml = tokens.stream()
-                .map(this::tokenToXML)
-                .collect(Collectors.toList());
-        result.addAll(toXml);
-        result.add("</tokens>");
-        return result;
-    }
 
     public List<String> compileClass(List<Token> tokens) {
         tokenCursor = -1;

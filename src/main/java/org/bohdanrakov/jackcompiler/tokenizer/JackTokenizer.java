@@ -1,10 +1,9 @@
-package org.bohdanrakov.jackcompiler;
+package org.bohdanrakov.jackcompiler.tokenizer;
 
-import org.bohdanrakov.jackcompiler.tokens.Token;
-import org.bohdanrakov.jackcompiler.tokens.TokenType;
+import org.bohdanrakov.jackcompiler.tokenizer.tokens.Token;
+import org.bohdanrakov.jackcompiler.tokenizer.tokens.TokenType;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
