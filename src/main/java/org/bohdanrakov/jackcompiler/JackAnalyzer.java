@@ -1,6 +1,7 @@
 package org.bohdanrakov.jackcompiler;
 
 import org.bohdanrakov.jackcompiler.compilationengine.CompilationEngine;
+import org.bohdanrakov.jackcompiler.compilationengine.JackToVMCompilationEngine;
 import org.bohdanrakov.jackcompiler.compilationengine.SemanticXMLCompilationEngine;
 import org.bohdanrakov.jackcompiler.compilationengine.TokenXMLCompilationEngine;
 import org.bohdanrakov.jackcompiler.tokenizer.JackTokenizer;
@@ -18,7 +19,7 @@ public class JackAnalyzer {
     private static CompilationEngine compilationEngine;
 
     public static void main(String[] args) {
-        compilationEngine = new SemanticXMLCompilationEngine();
+        compilationEngine = new JackToVMCompilationEngine();
         checkResourceArgument(args);
         String resourceToParse = args[0];
 

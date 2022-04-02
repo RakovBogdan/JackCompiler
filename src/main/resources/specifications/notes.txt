@@ -28,3 +28,20 @@ before the call, and the temp segment
 is undefined.
 
 
+all methods should have argument 0 = this, type of this is the class name
+
+
+
+token info: string value + token type KEYWORD, SYMBOL, IDENTIFIER, INTEGER_CONSTANT, STRING_CONSTANT
+
+<identifier> x, category:field, defined, variable-kind:argument, variable-index:0 </identifier>
+
+categories:var, argument, static, field, class, subroutine
+defined/used
+variable-kind:var, argument, static, field
+variable-index:0,1,2...
+
+
+Jack language grammar page 208
+Virtual machine memory access commands page 130
+Virtual machine

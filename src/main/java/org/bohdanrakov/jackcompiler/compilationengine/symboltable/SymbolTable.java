@@ -5,8 +5,6 @@ import java.util.Map;
 
 import static org.bohdanrakov.jackcompiler.compilationengine.symboltable.VariableKind.*;
 
-//list of HashTables?
-//all methods should have argument 0 = this, type is the class name
 public class SymbolTable {
 
     private Map<String, SymbolRecord> classSymbolTable = new HashMap<>();
